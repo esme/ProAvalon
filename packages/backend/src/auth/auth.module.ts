@@ -11,6 +11,7 @@ import { AuthGateway } from './auth.gateway';
 import { JWT_SECRET, JWT_EXPIRY } from '../util/getEnvVars';
 import { ChatModule } from '../chat/chat.module';
 import RedisAdapterModule from '../redis-adapter/redis-adapter.module';
+import RedisClientModule from '../redis-client/redis-client.module';
 import { OnlinePlayersModule } from './online-players/online-players.module';
 import { OnlineSocketsModule } from './online-sockets/online-sockets.module';
 
@@ -24,6 +25,7 @@ import { OnlineSocketsModule } from './online-sockets/online-sockets.module';
     }),
     ChatModule,
     RedisAdapterModule,
+    RedisClientModule,
     OnlinePlayersModule,
     OnlineSocketsModule,
   ],

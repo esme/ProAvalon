@@ -11,6 +11,7 @@ import { mockUserModel } from './users/users.service.spec';
 import { LocalStrategy } from './auth/guards/local.strategy';
 import { JwtStrategy } from './auth/guards/jwt.strategy';
 import { JWT_SECRET } from './util/getEnvVars';
+import RedisClientModule from './redis-client/redis-client.module';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -25,6 +26,7 @@ describe('AppController', () => {
           secret: JWT_SECRET,
           signOptions: { expiresIn: '60s' },
         }),
+        RedisClientModule,
       ],
       controllers: [AppController],
       providers: [

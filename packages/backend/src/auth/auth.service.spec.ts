@@ -9,6 +9,7 @@ import { JwtStrategy } from './guards/jwt.strategy';
 import { UsersService } from '../users/users.service';
 import { mockUserModel } from '../users/users.service.spec';
 import { JWT_SECRET } from '../util/getEnvVars';
+import RedisClientModule from '../redis-client/redis-client.module';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -22,6 +23,7 @@ describe('AuthService', () => {
           secret: JWT_SECRET,
           signOptions: { expiresIn: '60s' },
         }),
+        RedisClientModule,
       ],
       controllers: [AuthController],
       providers: [
