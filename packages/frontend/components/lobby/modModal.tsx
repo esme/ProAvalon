@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import {
   Modal,
@@ -12,34 +12,107 @@ import {
 
 import { RootState } from '../../store';
 import { ShowModal, IModState } from '../../store/mod/reducers';
-import { toggleModModal } from '../../store/mod/actions';
+import { toggleModModal, modBan } from '../../store/mod/actions';
 
 interface IProps {
   showModal: ShowModal;
   dispatchToggleModModal: typeof toggleModModal;
+  dispatchModBan: typeof modBan;
 }
 
 const ModModal = ({
   showModal,
   dispatchToggleModModal,
+  dispatchModBan,
 }: IProps): ReactElement => {
+  const [inputs, setInputs] = useState({
+    username: '',
+    reason: '',
+    duration: '',
+    description: '',
+  });
+
+  type BanTypes = 'userban' | 'fullipban' | 'lastipban';
+  type CheckedInputs = {
+    [banType in BanTypes]: boolean;
+  };
+
+  const [checkedInputs, setCheckedInputs] = useState<CheckedInputs>({
+    userban: false,
+    fullipban: false,
+    lastipban: false,
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    e.persist();
+    return setInputs(() => ({ ...inputs, [e.target.name]: e.target.value }));
+  };
+
+  const handleCheckedInputsChange = (
+    e: React.FormEvent<HTMLInputElement>,
+  ): void => {
+    e.persist();
+
+    return setCheckedInputs((prevState) => {
+      // e.target grabs the label but not the input
+      // is there a better way to do this?
+      const el = (e.target as HTMLLabelElement).previousSibling;
+      return {
+        ...checkedInputs,
+        [(el as HTMLInputElement).name]: !prevState[
+          (el as HTMLInputElement).name as BanTypes
+        ],
+      };
+    });
+  };
+
+  const checkboxes = [
+    {
+      name: 'userban',
+      key: 'userban',
+      label: 'User ban',
+    },
+    {
+      name: 'fullipban',
+      key: 'fullipban',
+      label: 'Full IP ban',
+    },
+    {
+      name: 'lastipban',
+      key: 'lastipban',
+      label: 'Last IP ban (single)',
+    },
+  ];
+
   return (
     <Modal open={showModal} onClose={dispatchToggleModModal} closeIcon>
       <Modal.Header>Ban menu</Modal.Header>
       <Modal.Content>
-        <Form>
+        <Form
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+            handleInputChange(e)
+          }
+          onSubmit={(e: React.FormEvent<HTMLFormElement>): void => {
+            e.preventDefault();
+            dispatchModBan({ ...inputs, ...checkedInputs });
+          }}
+        >
           <Form.Field>
             <Label>Username of player to ban:</Label>
             <Form.Input name="username" placeholder="username" />
           </Form.Field>
           <Form.Field>
             <Label>Type of ban:</Label>
-            <br />
-            <Checkbox value="user ban" label="User ban" />
-            <br />
-            <Checkbox value="full ip ban" label="Full IP ban" />
-            <br />
-            <Checkbox value="last ip ban" label="Last IP ban (Single)" />
+            {checkboxes.map(({ key, name, label }) => (
+              <div key={key}>
+                <Checkbox
+                  name={name}
+                  label={label}
+                  checked={checkedInputs[name as BanTypes]}
+                  onChange={handleCheckedInputsChange}
+                />
+              </div>
+            ))}
           </Form.Field>
           <Form.Field>
             <Label>Reason</Label>
@@ -87,7 +160,7 @@ const ModModal = ({
               placeholder="The user being banned will see this message. This message will also appear in the moderator logs."
             />
           </Form.Field>
-          <Button>Submit</Button>
+          <Button type="submit">Submit</Button>
         </Form>
       </Modal.Content>
     </Modal>
@@ -100,6 +173,7 @@ const mapStateToProps = (state: RootState): IModState => ({
 
 const mapDispatchToProps = {
   dispatchToggleModModal: toggleModModal,
+  dispatchModBan: modBan,
 };
 
 export default connect(
