@@ -15,6 +15,7 @@ import systemReducer from './system/reducers';
 import { ISystemState } from './system/types';
 import chatReducer, { IChatState } from './chat/reducers';
 import playersReducer, { IOnlinePlayersState } from './onlinePlayers/reducers';
+import modReducer, { IModState } from './mod/reducers';
 
 import rootSaga from './sagas';
 
@@ -26,11 +27,13 @@ const rootReducer = combineReducers<{
   system: ISystemState;
   chat: IChatState;
   onlinePlayers: IOnlinePlayersState;
+  mod: IModState;
 }>({
   userOptions: userOptionsReducer,
   system: systemReducer,
   chat: chatReducer,
   onlinePlayers: playersReducer,
+  mod: modReducer,
 });
 
 const bindMiddleware = (middleware: Middleware[]): StoreEnhancer => {

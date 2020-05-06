@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { getBackendUrl } from '../utils/getEnvVars';
 import { SetSocketChatEvents } from './chat';
 import { SetSocketPlayersEvents } from './onlinePlayers';
+import { SetSocketModEvents } from './mod';
 import { SocketEvents } from '../proto/lobbyProto';
 
 class SocketConnection {
@@ -60,6 +61,7 @@ class SocketConnection {
 
       SetSocketPlayersEvents(this.socket);
       SetSocketChatEvents(this.socket);
+      SetSocketModEvents(this.socket);
 
       this.socket.on('forceDisconnect', () => {
         // Only fire notification if we were in lobby.

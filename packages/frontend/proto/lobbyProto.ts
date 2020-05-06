@@ -8,6 +8,7 @@ export const SocketEvents = {
   ALL_CHAT_TO_SERVER: 'ALL_CHAT_TO_SERVER',
   ONLINE_PLAYERS: 'ONLINE_PLAYERS',
   USER_RECONNECT: 'USER_RECONNECT',
+  OPEN_MOD_MODAL: 'OPEN_MOD_MODAL',
 };
 
 export class ChatRequest {
